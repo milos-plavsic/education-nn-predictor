@@ -1,4 +1,4 @@
-.PHONY: install run api test docker-cli docker-api
+.PHONY: install run api test finetune docker-cli docker-api
 
 install:
 	python3 -m pip install --upgrade pip
@@ -13,6 +13,9 @@ api:
 
 test:
 	NN_EPOCHS=5 python3 -m pytest -q
+
+finetune:
+	FT_PHASE1_EPOCHS=40 FT_PHASE2_EPOCHS=30 python3 -m finetune
 
 docker-cli:
 	docker compose run --rm app

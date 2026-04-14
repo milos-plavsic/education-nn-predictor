@@ -25,6 +25,13 @@ class MLP(nn.Module):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         return self.net(x)
 
+    def set_finetune_mode(self, freeze_backbone: bool) -> None:
+        """If True, only the final linear layer is trainable (classic head fine-tuning)."""
+        for i, layer in enumerate(self.net):
+            trainable = (i == len(self.net) - 1) if freeze_backbone else True
+            for p in layer.parameters():
+                p.requires_grad = trainable
+
 
 def train_and_evaluate(random_state: int = 42) -> dict[str, float]:
     epochs = int(os.getenv("NN_EPOCHS", "60"))
