@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 
+import numpy as np
 import torch
 from sklearn.metrics import mean_absolute_error, r2_score
 from sklearn.model_selection import train_test_split
@@ -33,7 +34,7 @@ class MLP(nn.Module):
                 p.requires_grad = trainable
 
 
-def train_and_evaluate(random_state: int = 42) -> dict[str, float]:
+def baseline_val_predictions(random_state: int = 42) -> tuple[np.ndarray, np.ndarray, dict[str, float]]:
     epochs = int(os.getenv("NN_EPOCHS", "60"))
     X, y, _cols = load_xy_for_grade_prediction()
     X_train, X_val, y_train, y_val = train_test_split(
@@ -46,7 +47,6 @@ def train_and_evaluate(random_state: int = 42) -> dict[str, float]:
     Xt = torch.tensor(X_train, dtype=torch.float32)
     yt = torch.tensor(y_train, dtype=torch.float32).view(-1, 1)
     Xv = torch.tensor(X_val, dtype=torch.float32)
-    yv = torch.tensor(y_val, dtype=torch.float32).view(-1, 1)
 
     model = MLP(X_train.shape[1])
     opt = torch.optim.Adam(model.parameters(), lr=1e-2)
@@ -65,4 +65,10 @@ def train_and_evaluate(random_state: int = 42) -> dict[str, float]:
         val_pred = model(Xv).numpy().ravel()
     mae = float(mean_absolute_error(y_val, val_pred))
     r2 = float(r2_score(y_val, val_pred))
-    return {"val_mae": mae, "val_r2": r2, "epochs": float(epochs)}
+    metrics = {"val_mae": mae, "val_r2": r2, "epochs": float(epochs)}
+    return np.asarray(y_val, dtype=float), val_pred, metrics
+
+
+def train_and_evaluate(random_state: int = 42) -> dict[str, float]:
+    _y, _p, m = baseline_val_predictions(random_state=random_state)
+    return {k: v for k, v in m.items()}
