@@ -32,4 +32,4 @@ jobs:
       - name: Run CLI (short training)
         env:
           NN_EPOCHS: "10"
-        run: python app/main.py
+        run: python -m app.main
