@@ -1,15 +1,17 @@
 import os
 
-from app.datasets import DATA_SOURCE
-from app.nn_train import train_and_evaluate
+from app.langgraph_predictor import run_agentic_predictor
 
 
 def main() -> None:
-    os.environ.setdefault("NN_EPOCHS", os.getenv("NN_EPOCHS", "60"))
-    metrics = train_and_evaluate()
-    print("Education NN Predictor (PyTorch MLP on UCI student math)")
-    print(DATA_SOURCE)
-    for k, v in metrics.items():
+    confidence_threshold = float(os.getenv("PIPELINE_CONFIDENCE_THRESHOLD", "0.66"))
+    max_iterations = int(os.getenv("PIPELINE_MAX_ITERATIONS", "3"))
+    result = run_agentic_predictor(
+        confidence_threshold=confidence_threshold,
+        max_iterations=max_iterations,
+    )
+    print("Education NN Predictor (LangGraph confidence loop)")
+    for k, v in result.items():
         print(f"{k}: {v}")
 
 

@@ -1,3 +1,4 @@
+langgraph
 numpy
 pandas
 scikit-learn
