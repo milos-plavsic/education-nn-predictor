@@ -7,6 +7,14 @@ from langgraph.graph import END, StateGraph
 
 from app.datasets import DATA_SOURCE
 from app.nn_train import train_and_evaluate
+from app.orchestration_policy import (
+    confidence_label,
+    decide_loop,
+    normalized_mae_quality,
+    normalized_r2_quality,
+    normalize_threshold,
+    weighted_confidence,
+)
 from finetune.nn_finetune import run_two_phase_finetune
 
 
@@ -50,27 +58,9 @@ class PredictorState(TypedDict, total=False):
     decision_log: list[str]
 
 
-def _clip01(x: float) -> float:
-    return float(max(0.0, min(1.0, x)))
-
-
-def _label(score: float) -> str:
-    if score >= 0.8:
-        return "high"
-    if score >= 0.6:
-        return "medium"
-    return "low"
-
-
-def _confidence(mae: float, r2: float) -> float:
-    mae_norm = _clip01(mae / 20.0)
-    r2_norm = _clip01((r2 + 1.0) / 2.0)
-    return _clip01(0.55 * (1.0 - mae_norm) + 0.45 * r2_norm)
-
-
 def _validate(state: PredictorState) -> PredictorState:
     return {
-        "confidence_threshold": _clip01(float(state.get("confidence_threshold", 0.66))),
+        "confidence_threshold": normalize_threshold(state.get("confidence_threshold", 0.66)),
         "max_iterations": max(1, int(state.get("max_iterations", 3))),
         "iteration": 0,
         "history": [],
@@ -95,15 +85,13 @@ def _plan_iteration(state: PredictorState) -> PredictorState:
 
 def _run_baseline(state: PredictorState) -> PredictorState:
     os.environ["NN_EPOCHS"] = str(state["nn_epochs"])
-    m = train_and_evaluate()
-    return {"baseline_metrics": m}
+    return {"baseline_metrics": train_and_evaluate()}
 
 
 def _run_finetune(state: PredictorState) -> PredictorState:
     os.environ["FT_PHASE1_EPOCHS"] = str(state["phase1_epochs"])
     os.environ["FT_PHASE2_EPOCHS"] = str(state["phase2_epochs"])
-    m = run_two_phase_finetune()
-    return {"finetune_metrics": m}
+    return {"finetune_metrics": run_two_phase_finetune()}
 
 
 def _assess(state: PredictorState) -> PredictorState:
@@ -123,19 +111,20 @@ def _assess(state: PredictorState) -> PredictorState:
         selected_mae = baseline_mae
         selected_r2 = baseline_r2
 
-    score = _confidence(selected_mae, selected_r2)
-    conf_label = _label(score)
+    components = {
+        "primary_quality": normalized_mae_quality(selected_mae),
+        "secondary_quality": normalized_r2_quality(selected_r2),
+        "stability": 1.0,
+    }
+    score = weighted_confidence(components)
+    conf_label = confidence_label(score)
 
-    reached_conf = score >= state["confidence_threshold"]
-    reached_limit = state["iteration"] >= state["max_iterations"]
-    continue_loop = not reached_conf and not reached_limit
-
-    if reached_conf:
-        reason = "confidence_threshold_reached"
-    elif reached_limit:
-        reason = "max_iterations_reached"
-    else:
-        reason = "retry_with_additional_information"
+    loop = decide_loop(
+        confidence_score=score,
+        confidence_threshold=state["confidence_threshold"],
+        iteration=state["iteration"],
+        max_iterations=state["max_iterations"],
+    )
 
     h: IterMetrics = {
         "iteration": state["iteration"],
@@ -158,8 +147,8 @@ def _assess(state: PredictorState) -> PredictorState:
         "selected_r2": selected_r2,
         "confidence_score": score,
         "confidence_label": conf_label,
-        "continue_loop": continue_loop,
-        "stop_reason": reason,
+        "continue_loop": loop["continue_loop"],
+        "stop_reason": loop["stop_reason"],
         "history": [*state["history"], h],
     }
 
