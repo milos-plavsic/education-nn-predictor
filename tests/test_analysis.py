@@ -4,6 +4,7 @@ from analysis.report import generate_report
 
 
 def test_generate_report_smoke(tmp_path: Path, monkeypatch) -> None:
+    """Execute the test generate report smoke routine."""
     monkeypatch.setenv("NN_EPOCHS", "3")
     monkeypatch.setenv("FT_PHASE1_EPOCHS", "2")
     monkeypatch.setenv("FT_PHASE2_EPOCHS", "2")

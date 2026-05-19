@@ -19,6 +19,7 @@ _ALLOWED = frozenset({"student-mat.csv", "student-por.csv"})
 
 
 def fetch_uci_student_csv(filename: str, dest: Path) -> None:
+    """Execute the fetch uci student csv routine."""
     if filename not in _ALLOWED:
         raise ValueError(f"unsupported UCI student file: {filename!r}")
     dest.parent.mkdir(parents=True, exist_ok=True)

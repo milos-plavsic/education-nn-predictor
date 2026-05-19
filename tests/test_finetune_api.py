@@ -2,6 +2,7 @@ import pytest
 
 
 def test_finetune_pipeline_endpoint(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Execute the test finetune pipeline endpoint routine."""
     monkeypatch.setenv("FT_PHASE1_EPOCHS", "2")
     monkeypatch.setenv("FT_PHASE2_EPOCHS", "2")
     from fastapi.testclient import TestClient

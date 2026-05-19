@@ -10,10 +10,12 @@ client = TestClient(app)
 
 
 def test_health() -> None:
+    """Execute the test health routine."""
     assert client.get("/health").status_code == 200
 
 
 def test_fit_metrics() -> None:
+    """Execute the test fit metrics routine."""
     r = client.post("/v1/fit_metrics", json={"confidence_threshold": 0.7, "max_iterations": 2})
     assert r.status_code == 200
     data = r.json()

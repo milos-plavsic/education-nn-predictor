@@ -1,23 +1,29 @@
 from __future__ import annotations
 
 import math
-from typing import Mapping, TypedDict
+from collections.abc import Mapping
+from typing import TypedDict
 
 
 class LoopDecision(TypedDict):
+    """Implementation of the loop decision."""
+
     continue_loop: bool
     stop_reason: str
 
 
 def clip01(x: float) -> float:
+    """Execute the clip01 routine."""
     return float(max(0.0, min(1.0, x)))
 
 
 def normalize_threshold(threshold: float) -> float:
+    """Execute the normalize threshold routine."""
     return clip01(float(threshold))
 
 
 def confidence_label(score: float) -> str:
+    """Execute the confidence label routine."""
     if score >= 0.8:
         return "high"
     if score >= 0.6:
@@ -81,6 +87,7 @@ def decide_loop(
     iteration: int,
     max_iterations: int,
 ) -> LoopDecision:
+    """Execute the decide loop routine."""
     threshold = normalize_threshold(confidence_threshold)
     reached_conf = confidence_score >= threshold
     reached_limit = int(iteration) >= int(max_iterations)

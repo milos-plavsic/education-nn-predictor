@@ -1,10 +1,74 @@
-.venv/
+# Python
 __pycache__/
-*.pyc
-.pytest_cache/
-.coverage
-htmlcov/
-*.egg-info/
-dist/
+*.py[cod]
+*$py.class
+*.so
+.Python
 build/
-reports/
+dist/
+*.egg-info/
+*.egg
+develop-eggs/
+.installed.cfg
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Tests / coverage
+.pytest_cache/
+.tox/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+*.cover
+.hypothesis/
+
+# Linters / type checkers
+.mypy_cache/
+.pyre/
+.dmypy.json
+.pytype/
+.ruff_cache/
+
+# Editors
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Secrets and local config
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Logs
+*.log
+logs/
+
+# Build outputs
+docs/_build/
+site/
+
+# Notebooks scratchpads
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Security scan artifacts
+bandit-report.json
+trivy-results.sarif
+sbom.json
+.snyk
+
+# Caches
+.cache/
+.tmp/
+tmp/

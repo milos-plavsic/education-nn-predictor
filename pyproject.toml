@@ -1,0 +1,35 @@
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = [
+    "E",      # pycodestyle errors
+    "W",      # pycodestyle warnings
+    "F",      # Pyflakes
+    "I",      # isort
+    "N",      # pep8-naming
+    "UP",     # pyupgrade
+    "RUF",    # Ruff-specific rules
+    "D",      # pydocstyle
+]
+ignore = [
+    "D100",   # Missing module docstring
+    "D101",   # Missing class docstring
+    "D102",   # Missing method docstring
+    "D103",   # Missing function docstring
+    "D104",   # Missing package docstring
+    "D107",   # Missing __init__ docstring
+    "E501",   # Line too long (handled by formatter)
+    "N802",   # AST visitor methods use framework-required names
+    "N803",   # Argument name should be lowercase (allow ML `X`, `y`)
+    "N806",   # Variable in function should be lowercase (allow ML `X_train`)
+    "N815",   # Framework aliases may use mixedCase names
+    "N818",   # Local fallback names mirror external exception APIs
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["app", "core_*"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"

@@ -12,6 +12,7 @@ import numpy as np
 def scatter_actual_vs_predicted(
     y_true: np.ndarray, y_pred: np.ndarray, out_path: Path, *, title: str
 ) -> None:
+    """Execute the scatter actual vs predicted routine."""
     out_path = Path(out_path)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     fig, ax = plt.subplots(figsize=(5, 5))
@@ -29,6 +30,7 @@ def scatter_actual_vs_predicted(
 
 
 def mae_comparison_bar(labels: list[str], maes: list[float], out_path: Path, *, title: str) -> None:
+    """Execute the mae comparison bar routine."""
     out_path = Path(out_path)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     x = np.arange(len(labels))

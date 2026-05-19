@@ -1,6 +1,5 @@
 from app.langgraph_predictor import run_agentic_predictor
 
-
 REQUIRED = {
     "confidence_score",
     "confidence_label",
@@ -13,6 +12,7 @@ REQUIRED = {
 
 
 def test_orchestration_contract_fields_present() -> None:
+    """Execute the test orchestration contract fields present routine."""
     out = run_agentic_predictor(confidence_threshold=0.7, max_iterations=2)
     assert REQUIRED.issubset(set(out.keys()))
     assert 0.0 <= out["confidence_score"] <= 1.0

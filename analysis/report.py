@@ -12,6 +12,7 @@ from finetune.nn_finetune import finetune_val_predictions
 
 
 def generate_report(out_dir: Path | None = None, random_state: int = 42) -> dict:
+    """Execute the generate report routine."""
     out = Path(out_dir or "reports")
     fig_dir = out / "figures"
     out.mkdir(parents=True, exist_ok=True)
@@ -40,10 +41,16 @@ def generate_report(out_dir: Path | None = None, random_state: int = 42) -> dict
         y_b, p_b, fig_dir / "baseline_val_actual_vs_pred.png", title="Baseline MLP — validation"
     )
     scatter_actual_vs_predicted(
-        yv, p1, fig_dir / "finetune_after_pretrain_val.png", title="Two-phase NN — after pretrain (val)"
+        yv,
+        p1,
+        fig_dir / "finetune_after_pretrain_val.png",
+        title="Two-phase NN — after pretrain (val)",
     )
     scatter_actual_vs_predicted(
-        yv, p2, fig_dir / "finetune_after_head_val.png", title="Two-phase NN — after head fine-tune (val)"
+        yv,
+        p2,
+        fig_dir / "finetune_after_head_val.png",
+        title="Two-phase NN — after head fine-tune (val)",
     )
     mae_comparison_bar(
         ["Baseline MLP", "After pretrain", "After head FT"],
@@ -57,6 +64,7 @@ def generate_report(out_dir: Path | None = None, random_state: int = 42) -> dict
     )
 
     def _fmt(x: float) -> str:
+        """Internal helper that handles fmt."""
         if isinstance(x, float) and (math.isnan(x) or math.isinf(x)):
             return "n/a"
         return f"{x:.3f}"
@@ -89,6 +97,7 @@ def generate_report(out_dir: Path | None = None, random_state: int = 42) -> dict
 
 
 def main() -> None:
+    """Execute the main routine."""
     print(dumps_pretty(generate_report()))
 
 

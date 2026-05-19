@@ -9,11 +9,11 @@ import numpy as np
 
 def to_json_serializable(obj: Any) -> Any:
     """Recursively convert values for RFC 8259 JSON (no NaN/Inf; NumPy scalars → Python)."""
-    if obj is None or isinstance(obj, (bool, str)):
+    if obj is None or isinstance(obj, bool | str):
         return obj
     if isinstance(obj, dict):
         return {str(k): to_json_serializable(v) for k, v in obj.items()}
-    if isinstance(obj, (list, tuple)):
+    if isinstance(obj, list | tuple):
         return [to_json_serializable(v) for v in obj]
     if isinstance(obj, np.ndarray):
         return to_json_serializable(obj.tolist())
@@ -29,4 +29,5 @@ def to_json_serializable(obj: Any) -> Any:
 
 
 def dumps_pretty(obj: Any, *, indent: int = 2) -> str:
+    """Execute the dumps pretty routine."""
     return json.dumps(to_json_serializable(obj), indent=indent, allow_nan=False)

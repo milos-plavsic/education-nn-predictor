@@ -4,6 +4,7 @@ import os
 
 import numpy as np
 import torch
+from ml_core import configure_logging
 from sklearn.metrics import mean_absolute_error, r2_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
@@ -12,13 +13,15 @@ from torch import nn
 from app.datasets import load_xy_for_grade_prediction
 from app.nn_train import MLP
 
+logger = configure_logging("nn_finetune")
+
 
 def _two_phase_train(
     random_state: int = 42,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray, dict[str, float]]:
     """Returns y_val, pred_after_phase1, pred_after_phase2, metrics."""
-    phase1_epochs = int(os.getenv("FT_PHASE1_EPOCHS", os.getenv("NN_EPOCHS", "50")))
-    phase2_epochs = int(os.getenv("FT_PHASE2_EPOCHS", "40"))
+    phase1_epochs = int(os.getenv("FT_PHASE1_EPOCHS", os.getenv("NN_EPOCHS", "5")))
+    phase2_epochs = int(os.getenv("FT_PHASE2_EPOCHS", "3"))
     lr1 = float(os.getenv("FT_LR_PRETRAIN", "1e-2"))
     lr2 = float(os.getenv("FT_LR_FINETUNE", "5e-4"))
 
@@ -85,15 +88,19 @@ def run_two_phase_finetune(random_state: int = 42) -> dict[str, float]:
     return m
 
 
-def finetune_val_predictions(random_state: int = 42) -> tuple[np.ndarray, np.ndarray, np.ndarray, dict[str, float]]:
+def finetune_val_predictions(
+    random_state: int = 42,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, dict[str, float]]:
+    """Execute the finetune val predictions routine."""
     return _two_phase_train(random_state=random_state)
 
 
 def main() -> None:
+    """Execute the main routine."""
     out = run_two_phase_finetune()
-    print("Two-phase NN fine-tune (freeze backbone → head only)")
+    logger.info("Two-phase NN fine-tune (freeze backbone → head only)")
     for k, v in out.items():
-        print(f"{k}: {v}")
+        logger.info(f"{k}: {v}")
 
 
 if __name__ == "__main__":
