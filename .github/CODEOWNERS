@@ -1,0 +1,9 @@
+# Default code owner — required reviewer on all PRs.
+* @milos-plavsic
+
+# Security-sensitive paths require a focused review.
+/SECURITY.md       @milos-plavsic
+/.github/          @milos-plavsic
+/Dockerfile        @milos-plavsic
+/k8s/              @milos-plavsic
+/requirements*.txt @milos-plavsic

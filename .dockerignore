@@ -1,0 +1,99 @@
+# Version control
+.git
+.gitignore
+.gitattributes
+
+# Python build artifacts
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+*.egg
+develop-eggs/
+.installed.cfg
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Virtual environments
+.venv
+venv/
+env/
+ENV/
+
+# Test and coverage artifacts
+.pytest_cache/
+.tox/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+*.cover
+.hypothesis/
+
+# Type-checking caches
+.mypy_cache/
+.pyre/
+.dmypy.json
+.pytype/
+.ruff_cache/
+
+# Editor/IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Local env files (never bake secrets into images)
+.env
+.env.*
+!.env.example
+
+# Documentation builds
+docs/_build/
+site/
+
+# Logs and local data dumps
+*.log
+logs/
+
+# CI / orchestration files irrelevant inside the image
+.github/
+.gitlab-ci.yml
+k8s/
+docker-compose*.yml
+docker-compose*.yaml
+Dockerfile.dev
+Dockerfile.test
+
+# Project files we don't ship
+README.md
+CONTRIBUTING.md
+CODE_OF_CONDUCT.md
+SECURITY.md
+LICENSE
+LICENSE.md
+LICENSE.txt
+CHANGELOG.md
+RELEASE_NOTES*.md
+*.md
+!app/**/*.md
+
+# Test directory — tests run in CI, not in the runtime image
+tests/
+
+# Notebooks and exploratory work
+*.ipynb
+.ipynb_checkpoints/
+notebooks/
+
+# Coverage and security reports
+bandit-report.json
+trivy-results.sarif
+sbom.json
