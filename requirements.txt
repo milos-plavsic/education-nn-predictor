@@ -33,4 +33,4 @@ langgraph==0.0.32
 langchain-core==0.1.45
 
 # observability
-prometheus-client>=0.20.0
+prometheus-client>=0.25.0
