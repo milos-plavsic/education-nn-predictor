@@ -29,8 +29,8 @@ fastapi==0.136.3
 uvicorn[standard]==0.48.0
 
 # Agent orchestration
-langgraph==0.6.11
-langchain-core==0.3.86
+langgraph==0.0.32
+langchain-core==0.1.45
 
 # observability
 prometheus-client>=0.20.0
