@@ -31,8 +31,8 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt ./
-RUN pip wheel --wheel-dir /wheels -r requirements.txt \
-    && pip wheel --wheel-dir /wheels gunicorn 'uvicorn[standard]'
+RUN pip wheel --wheel-dir /wheels \
+    -r requirements.txt gunicorn 'uvicorn[standard]'
 
 # -----------------------------------------------------------------------------
 # Runtime
