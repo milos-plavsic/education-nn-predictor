@@ -1,14 +1,11 @@
 name: CI
 
 on:
+  workflow_dispatch:
   push:
     branches: [main, develop]
   pull_request:
     branches: [main, develop]
-  schedule:
-    # Run the full security suite weekly even if no commits land.
-    - cron: "0 6 * * 1"
-
 # Cancel in-progress runs for the same PR / branch when a new commit arrives.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

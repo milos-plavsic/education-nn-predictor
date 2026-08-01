@@ -31,8 +31,8 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt ./
-RUN pip wheel --wheel-dir /wheels -r requirements.txt \
-    && pip wheel --wheel-dir /wheels gunicorn 'uvicorn[standard]'
+RUN pip wheel --wheel-dir /wheels \
+    -r requirements.txt gunicorn 'uvicorn[standard]'
 
 # -----------------------------------------------------------------------------
 # Runtime
@@ -62,7 +62,7 @@ WORKDIR /app
 
 # Install pre-built wheels from the builder stage.
 COPY --from=builder /wheels /wheels
-RUN pip install --no-index --find-links=/wheels /wheels/*.whl \
+RUN pip install --no-index --no-deps /wheels/*.whl \
     && rm -rf /wheels
 
 # Application code, owned by the non-root user.
